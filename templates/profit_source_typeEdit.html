@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jitiao" %}
+{% set subPageKey = "jitiao_profit_source_type" %}
+
+{% block edithead %}
+<h2>委托方类型</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>委托方类型:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入委托方类型</span>
+</p>
+{% endblock %}

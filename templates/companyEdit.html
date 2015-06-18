@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_company" %}
+
+{% block edithead %}
+<h2>公司</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>公司名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入公司名</span>
+</p>
+{% endblock %}

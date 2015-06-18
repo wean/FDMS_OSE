@@ -1,0 +1,572 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jitiao" %}
+{% set subPageKey = "jitiao_profit" %}
+
+{% block edithead %}
+<h2>毛利表</h2>
+{% endblock%}
+{% block editbody %}
+<ul class="tabs">
+    <li class="active">
+        <a href="#tab-profit">基本信息</a>
+    </li>
+    {%if dataId !='new'%}
+    <li>
+        <a href="#tab-profit-in">应收款</a>
+    </li>
+    <li>
+        <a href="#tab-profit-out">应付款</a>
+    </li>
+    {%endif%}
+</ul>
+<div class="tab_container">
+    <div id="tab-profit" class="tab_content" style="display:block">
+        <p>
+            <label>出发日期:</label>
+            <input type="text" class="text datepicker w100" fdata="fdata" fdata-type="datetime" fdata-column="departTime" value="{{(objectEdit.departTime)|datetime("%Y-%m-%d")}}" /> 
+            <span class="valid">请输入出发日期</span>
+        </p>
+        <p>
+            <label>团号:</label>
+            <input type="text" class="text" fdata="fdata" fdata-type="string" fdata-column="teamNo" value="{{objectEdit.teamNo}}" /> 
+            <span class="valid">请输入团号</span>
+        </p>
+        <p>
+            <label>类型:</label>
+            <select class="select" fdata="fdata" fdata-type="string" fdata-column="profitTypeId">
+                {% for pt in objectForeignList["profitTypeId"] %}
+                <option value="{{pt.id}}" {% if pt.id==objectEdit.profitTypeId %}selected="selected" {% endif %}>{{pt.name}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label>人数:</label>
+            <input type="text" placeholder="客人人数" class="text w100" fdata="fdata" fdata-type="int" fdata-column="peopleNum" value="{{objectEdit.peopleNum}}" />
+            <span class="valid">请输入人数</span>
+        </p>
+        <p>
+            <label>委托方:</label>
+            <select class="select" fdata="fdata" fdata-type="string" fdata-column="sourceTypeId">
+                {% for pst in objectForeignList["sourceTypeId"] %}
+                <option value="{{pst.id}}" {% if pst.id==objectEdit.sourceTypeId %}selected="selected" {% endif %}>{{pst.name}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label>领队:</label>
+            <input type="text" class="text w100" fdata="fdata" fdata-type="string" fdata-column="leader" value="{{objectEdit.leader}}" /> 
+            <span class="valid">请输入领队</span>
+        </p>
+        <p>
+            <label>领队人数:</label>
+            <input type="text" class="text w100" fdata="fdata" fdata-type="int" fdata-column="leaderNum" value="{{objectEdit.leaderNum}}" /> 
+            <span class="valid">请输入领队人数</span>
+        </p>
+        <p>
+            <label>线路:</label>
+            <select class="select select-complete w400" fdata="fdata" fdata-type="string" fdata-column="lineId">
+                {% for line in objectForeignList["lineId"] %}
+                <option value="{{line.id}}" {% if line.id==objectEdit.lineId %}selected="selected" {% endif %}>{{line.name}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label>销售:</label>
+            <select class="select" fdata="fdata" fdata-type="string" fdata-column="sellerId">
+                {% for pst in objectForeignList["sellerId"] %}
+                <option value="{{pst.id}}" {% if pst.id==objectEdit.sellerId %}selected="selected" {% endif %}>{{pst.name}}</option>
+                {% endfor %}
+            </select>
+        </p>
+    </div>
+    <div id="tab-profit-in" class="tab_content" style="display:none">
+        <table style="margin: -19px; width:105%" class="edit ">
+            <tbody>
+                <tr class="even">
+                    <th width="10%" scope="col">项目</th>
+                    <th width="10%" scope="col">单位</th>
+                    <th width="10%" scope="col">部门</th>
+                    <th width="10%" scope="col">联系人</th>
+                    <th width="5%" scope="col">人数</th>
+                    <th width="5%" scope="col">金额</th>
+                    <th width="12%" scope="col">结余(待入帐)</th>
+                    <th width="12%" scope="col">订单号</th>
+                    <th width="26%" scope="col">操作</th>
+                    <th width="0%" scope="col" class="hide"></th>
+                </tr>
+                {% for pi in pageRelateObject["itemIn"] %}
+                <tr objectId="{{pi.id}}">
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="profitItemTypeId" fdata-parent="t_profit_item" fdata-parent-id="{{pi.id}}">
+                            {% for pit in pageRelateObject["profitItemTypeList"] %}
+                            <option value="{{pit.id}}" {% if pi.profitItemTypeId == pit.id %}selected="selected" {% endif %} >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}" value="{{pi.profitItemTypeId}}">{{pi.profitItemTypeName}}</label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="companyId" fdata-parent="t_profit_item" fdata-parent-id="{{pi.id}}" >
+                            {% for pit in pageRelateObject["companyList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}" value="{{pi.companyId}}">{{pi.companyName}}</label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="departmentId" fdata-parent="t_profit_item" fdata-parent-id="{{pi.id}}">
+                            {% for pit in pageRelateObject["departmentList"] %}
+                            <option value="{{pit.id}}" companyId="{{pit.companyId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read {% if pi.id=="new" %}hide{% endif%}" value="{{pi.departmentId}}">{{pi.departmentName}}</label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="contactId" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}">
+                            {% for pit in pageRelateObject["contactList"] %}
+                            <option value="{{pit.id}}" departmentId="{{pit.departmentId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}" value="{{pi.contactId}}">{{pi.contactName}}</label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="int" fdata-column="peopleNum"  fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}" value="{{pi.peopleNum}}"/>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}">{{pi.peopleNum}}</label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="float" fdata-column="totalMoney" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}" value="{{pi.totalMoney}}"/>
+                        <label class="table_read {% if pi.id=="new" %}hide{% endif%}">{{pi.totalMoney}}</label>
+                    </td>
+                    <td scope="col">
+                        <label class="table_read">{{'' if pi.remainMoney == None else pi.remainMoney}}({{0 if pi.incomeMoney == None else pi.incomeMoney}})</label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="billNo" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}" value="{{pi.billNo}}"/>
+                        <label class="table_read {% if pi.id=="new" %}hide{% endif%}">{{pi.billNo}}</label>
+                    </td>
+                    <td scope="col">
+                        <a onclick="doEdit(this)" href="javascript:void(0);" class="{% if pi.id=="new" %}hide{% endif%}" >编辑</a>
+                        <a onclick="saveEdit(this)" href="javascript:void(0);" class="btn_save {% if pi.id!="new" %}hide{% endif%}">保存</a>
+                        <a onclick="deleteRow(this)" href="javascript:void(0);" class="{% if pi.id=="new" %}hide{% endif%}">删除</a>
+                        <a href="/page/guest/list/1?profitItemId={{pi.id}}" class="{% if pi.id=="new" %}hide{% endif%}" >客人</a>
+                        <a href="/page/account_flow/list/1?profitItemId={{pi.id}}" class="{% if pi.id=="new" %}hide{% endif%}" >流水</a>
+                        <a href="javascript:void(0);" link="/page/profit_check_item/list/1?profitItemId={{pi.id}}" class="check-list-button {% if pi.id=="new" %}hide{% endif%}" >明细</a>
+                        <a href="javascript:$('a[data-lightbox=bill-{{pi.id}}').eq(0).click()" class="bill-button" >凭证</a>
+                        {% for bill in pageRelateObject["billList"]%}
+                        {% if bill.profitItemId == pi.id%}
+                        <a href="/{{bill.billPic}}" data-lightbox="bill-{{pi.id}}" class="bill-pic" ></a>
+                        {% endif%}
+                        {% endfor %}
+                        
+                        {% if pi.remainMoney != 0%}
+                        <a href="/page/income_check/edit/new?profitItemId={{pi.id}}&profitId={{objectEdit.id}}" class="{% if pi.id=="new" %}hide{% endif%}" >入账</a>
+                        {% endif %}
+                         <a href="/page/profit_item/print/{{pi.id}}" >打印</a>
+                    </td>
+                    <td>
+                        <input type="hidden" class="table_edit hide" fdata="fdata" fdata-type="stringint" fdata-column="type" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}"  value="0" />
+                    </td>
+                </tr>
+                {% endfor%}
+                <tr objectId="new">
+                    <td scope="col">
+                        <select class="select table_edit" fdata="fdata" fdata-type="string" fdata-column="profitItemTypeId" fdata-parent="t_profit_item" fdata-parent-id="new">
+                            {% for pit in pageRelateObject["profitItemTypeList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit " fdata="fdata" fdata-type="string" fdata-column="companyId" fdata-parent="t_profit_item" fdata-parent-id="new" >
+                            {% for pit in pageRelateObject["companyList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit" fdata="fdata" fdata-type="string" fdata-column="departmentId" fdata-parent="t_profit_item" fdata-parent-id="new">
+                            {% for pit in pageRelateObject["departmentList"] %}
+                            <option value="{{pit.id}}" companyId="{{pit.companyId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit" fdata="fdata" fdata-type="string" fdata-column="contactId" fdata-parent="t_profit_item"  fdata-parent-id="new">
+                            {% for pit in pageRelateObject["contactList"] %}
+                            <option value="{{pit.id}}" departmentId="{{pit.departmentId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit " fdata="fdata" fdata-type="int" fdata-column="peopleNum"  fdata-parent="t_profit_item"  fdata-parent-id="new" value=""/>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit " fdata="fdata" fdata-type="float" fdata-column="totalMoney" fdata-parent="t_profit_item"  fdata-parent-id="new" value=""/>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <label class="table_read"></label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit" fdata="fdata" fdata-type="string" fdata-column="billNo" fdata-parent="t_profit_item"  fdata-parent-id="new" value=""/>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <a onclick="doEdit(this)" href="javascript:void(0);" class="hide" >编辑</a>
+                        <a onclick="saveEdit(this)" href="javascript:void(0);" class="btn_save">保存</a>
+                        <a onclick="deleteRow(this)" href="javascript:void(0);" class="hide">删除</a>
+                    </td>
+                    <td>
+                        <input type="hidden" class="table_edit hide" fdata="fdata" fdata-type="stringint" fdata-column="type" fdata-parent="t_profit_item"  fdata-parent-id="new"  value="0" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="tab-profit-out" class="tab_content" style="display:none">
+        <table style="margin: -19px; width:105%" class="edit ">
+            <tbody>
+                <tr class="even">
+                    <th width="10%" scope="col">项目</th>
+                    <th width="10%" scope="col">单位</th>
+                    <th width="10%" scope="col">部门</th>
+                    <th width="10%" scope="col">联系人</th>
+                    <th width="5%" scope="col">人数</th>
+                    <th width="5%" scope="col">金额</th>
+                    <th width="12%" scope="col">结余(待打款)</th>
+                    <th width="18%" scope="col">订单号</th>
+                    <th width="20%" scope="col">操作</th>
+                    <th width="0%" scope="col" class="hide"></th>
+                </tr>
+                {% for pi in pageRelateObject["itemOut"] %}
+                <tr objectId="{{pi.id}}">
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="profitItemTypeId" fdata-parent="t_profit_item" fdata-parent-id="{{pi.id}}">
+                            {% for pit in pageRelateObject["profitItemTypeList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}" value="{{pi.profitItemTypeId}}">{{pi.profitItemTypeName}}</label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="companyId" fdata-parent="t_profit_item" fdata-parent-id="{{pi.id}}" >
+                            {% for pit in pageRelateObject["companyList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}" value="{{pi.companyId}}">{{pi.companyName}}</label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="departmentId" fdata-parent="t_profit_item" fdata-parent-id="{{pi.id}}">
+                            {% for pit in pageRelateObject["departmentList"] %}
+                            <option value="{{pit.id}}" companyId="{{pit.companyId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read {% if pi.id=="new" %}hide{% endif%}" value="{{pi.departmentId}}">{{pi.departmentName}}</label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="contactId" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}">
+                            {% for pit in pageRelateObject["contactList"] %}
+                            <option value="{{pit.id}}" departmentId="{{pit.departmentId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}" value="{{pi.contactId}}">{{pi.contactName}}</label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="int" fdata-column="peopleNum"  fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}" value="{{pi.peopleNum}}"/>
+                        <label class="table_read  {% if pi.id=="new" %}hide{% endif%}">{{pi.peopleNum}}</label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="float" fdata-column="totalMoney" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}" value="{{pi.totalMoney}}"/>
+                        <label class="table_read {% if pi.id=="new" %}hide{% endif%}">{{pi.totalMoney}}</label>
+                    </td>
+                    <td scope="col">
+                        <label class="table_read">{{'' if pi.remainMoney == None else pi.remainMoney}}({{0 if pi.requestedMoney == None else pi.requestedMoney}})</label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit {% if pi.id!="new" %}hide{% endif%}" fdata="fdata" fdata-type="string" fdata-column="billNo" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}" value="{{pi.billNo}}"/>
+                        <label class="table_read {% if pi.id=="new" %}hide{% endif%}">{{pi.billNo}}</label>
+                    </td>
+                    <td scope="col">
+                        <a onclick="doEdit(this)" href="javascript:void(0);" class="{% if pi.id=="new" %}hide{% endif%}" >编辑</a>
+                        <a onclick="saveEdit(this)" href="javascript:void(0);" class="btn_save {% if pi.id!="new" %}hide{% endif%}">保存</a>
+                        <a onclick="deleteRow(this)" href="javascript:void(0);" class="{% if pi.id=="new" %}hide{% endif%}">删除</a>
+                        <a href="/page/account_flow/list/1?profitItemId={{pi.id}}" class="{% if pi.id=="new" %}hide{% endif%}" >流水</a>
+                        <a href="javascript:$('a[data-lightbox=bill-{{pi.id}}').eq(0).click()" class="bill-button" >凭证</a>
+                        {% for bill in pageRelateObject["billList"]%}
+                        {% if bill.profitItemId == pi.id%}
+                        <a href="/{{bill.billPic}}" data-lightbox="bill-{{pi.id}}" class="bill-pic" ></a>
+                        {% endif%}
+                        {% endfor %}
+                        
+                        {% if pi.remainMoney != 0 %}
+                        <a href="/page/pay_request/edit/new?profitItemId={{pi.id}}&profitId={{objectEdit.id}}" class="{% if pi.id=="new" %}hide{% endif%}" >请款</a>
+                        {% endif %}
+                     </td>
+                    <td>
+                        <input type="hidden" class="table_edit hide" fdata="fdata" fdata-type="stringint" fdata-column="type" fdata-parent="t_profit_item"  fdata-parent-id="{{pi.id}}"  value="1" />
+                    </td>
+                </tr>
+                {% endfor%}
+                <tr objectId="new">
+                    <td scope="col">
+                        <select class="select table_edit" fdata="fdata" fdata-type="string" fdata-column="profitItemTypeId" fdata-parent="t_profit_item" fdata-parent-id="new">
+                            {% for pit in pageRelateObject["profitItemTypeList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit " fdata="fdata" fdata-type="string" fdata-column="companyId" fdata-parent="t_profit_item" fdata-parent-id="new" >
+                            {% for pit in pageRelateObject["companyList"] %}
+                            <option value="{{pit.id}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit" fdata="fdata" fdata-type="string" fdata-column="departmentId" fdata-parent="t_profit_item" fdata-parent-id="new">
+                            {% for pit in pageRelateObject["departmentList"] %}
+                            <option value="{{pit.id}}" companyId="{{pit.companyId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <select class="select table_edit" fdata="fdata" fdata-type="string" fdata-column="contactId" fdata-parent="t_profit_item"  fdata-parent-id="new">
+                            {% for pit in pageRelateObject["contactList"] %}
+                            <option value="{{pit.id}}" departmentId="{{pit.departmentId}}" >{{pit.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit " fdata="fdata" fdata-type="int" fdata-column="peopleNum"  fdata-parent="t_profit_item"  fdata-parent-id="new" value=""/>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit " fdata="fdata" fdata-type="float" fdata-column="totalMoney" fdata-parent="t_profit_item"  fdata-parent-id="new" value=""/>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <label class="table_read"></label>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="text table_edit" fdata="fdata" fdata-type="string" fdata-column="billNo" fdata-parent="t_profit_item"  fdata-parent-id="new" value=""/>
+                        <label class="table_read hide"></label>
+                    </td>
+                    <td scope="col">
+                        <a onclick="doEdit(this)" href="javascript:void(0);" class="hide" >编辑</a>
+                        <a onclick="saveEdit(this)" href="javascript:void(0);" class="btn_save">保存</a>
+                        <a onclick="deleteRow(this)" href="javascript:void(0);" class="hide">删除</a>
+                    </td>
+                    <td>
+                        <input type="hidden" class="table_edit hide" fdata="fdata" fdata-type="stringint" fdata-column="type" fdata-parent="t_profit_item"  fdata-parent-id="new"  value="1" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+ 
+ function saveEdit(t){
+     var json = {};
+	 $(t).parent().parent().find("[fdata='fdata']").each(function(){
+		 if ($(this).attr("fdata-column")) {
+             if ($(this).attr("type") == "radio" && $(this).is(":checked") == false){
+                 return;
+             }
+             var val = $(this).val();
+             
+             if ($(this).attr("type") == "checkbox"){
+                 val = $(this).is(":checked") ? 1 : 0;
+             }
+             if (val == "" && $(this).attr("type") == "password"){
+                 return;
+             }
+             json[$(this).attr("fdata-column")] = val;
+		 };
+	 });
+     if (window.onSaving){
+         window.onSaving(json);
+     }
+     json["profitId"] = "{{dataId}}";
+     $.ajax({
+         type: "POST",
+         url: "/action/setData?dataKey=profit_item&dataId=" + $(t).parent().parent().find("[fdata='fdata']").eq(0).attr("fdata-parent-id") + "&m=" + Math.random(),
+         data: JSON.stringify(json),
+         success : function(data){
+             if (data){
+                 data = eval("(" + data + ")")
+                     if (data){
+                         if (data.code == "ok"){
+                             alert("保存成功!");
+                             window.location.reload();
+                         } else if (data.msg){
+                             alert("保存失败 " + data.msg);
+                         } else {
+                             alert("保存失败!");
+                         }
+                     }
+             }
+         },
+         error: function(data){
+             alert("保存失败!");
+         }
+     });
+     
+     return;
+     var oldRow = $(t).parent().parent();
+     if (oldRow.attr("objectId") == "new"){
+         var newRow = oldRow.clone();
+         newRow.find("select.select").siblings().find(":not(.table_read)").remove();
+         newRow.find("select.select").show();
+         //newRow.find("select.select").select2({ width: '95%' });
+         newRow.attr("objectId", "new");
+         oldRow.parent().append(newRow);
+         bindCDC(newRow);
+         oldRow.attr("objectId", "newnew" + oldRow.parent().children().length);
+         oldRow.find("[fdata=fdata]").attr("fdata-parent-id", "newnew" + oldRow.parent().children().length);
+     }
+     oldRow.find(".table_read").removeClass("hide");
+     oldRow.find(".table_read").siblings().addClass("hide");
+     $(t).addClass("hide");
+     $(t).siblings().removeClass("hide");
+
+     oldRow.find("input.table_edit").each(function(){
+         $(this).parent().find(".table_read").text($(this).val());
+     });
+     oldRow.find("select.table_edit").each(function(){
+         $(this).parent().find(".table_read").text($(this).find("option:selected").text());
+         $(this).parent().find(".table_read").attr("value", ($(this).find("option:selected").attr("value")));
+     });
+     
+ }
+
+ function doEdit(t){
+     var row = $(t).parent().parent();
+
+     row.find(".btn_save").removeClass("hide");
+     row.find(".btn_save").siblings().addClass("hide");
+     row.find(".table_read").addClass("hide");
+
+     row.find(".table_read").siblings().removeClass("hide");
+
+     row.find("select.select").siblings().find(":not(.table_read)").remove();
+     row.find("select.select").show();
+     //row.find("select.select").select2({ width: '95%' });
+
+     row.find("[fdata-column=companyId]").val(row.find("[fdata-column=companyId]").parent().find(".table_read").attr("value"));
+     row.find("[fdata-column=companyId]").each(function(){
+         updateDepartmentSelect(this);
+     });
+     row.find("[fdata-column=departmentId]").val(row.find("[fdata-column=departmentId]").parent().find(".table_read").attr("value"));
+     row.find("[fdata-column=departmentId]").each(function(){
+         updateContactSelect(this);
+     });
+     row.find("[fdata-column=contactId]").val(row.find("[fdata-column=contactId]").parent().find(".table_read").attr("value"));
+ }
+
+ $(function(){
+     $("#tab-profit-in table tr,#tab-profit-out table tr").each(function(){bindCDC($(this));});
+ });
+
+ function updateDepartmentSelect(t){
+     var that = $(t).parent().parent().find("[fdata-column=companyId]");
+     departmentSelect = $(t).parent().parent().find("[fdata-column=departmentId]");
+     departmentSelect.find("option").hide();
+     departmentSelect.find("option[value='']").show();
+     departmentSelect.find("option[companyId=" + that.val() + "]").show();  
+     departmentSelect.val(departmentSelect.find("option[companyId=" + that.val() + "]").eq(0).val());
+
+     updateContactSelect(t);
+ }
+
+ function updateContactSelect(t){
+     var that =  $(t).parent().parent().find("[fdata-column=departmentId]");
+     contactSelect = $(t).parent().parent().find("[fdata-column=contactId]");
+     contactSelect.find("option").hide();
+     contactSelect.find("option[value='']").show();
+     contactSelect.find("option[departmentId=" + that.val() + "]").show();  
+     contactSelect.val(contactSelect.find("option[departmentId=" + that.val() + "]").eq(0).val());
+ }
+
+ function bindCDC(row){
+     row.find("[fdata-column=departmentId]").change(function(){
+         updateContactSelect(this);
+     });
+     
+     row.find("[fdata-column=companyId]").change(function(){
+         updateDepartmentSelect(this);
+     });
+
+     row.find("[fdata-column=companyId]").each(function(){
+         updateDepartmentSelect(this);
+     });
+ }
+
+ function deleteRow(t){
+     if (confirm("确认删除！")){
+        $.ajax({
+            type: "POST",
+            url: "/action/delData?dataKey=profit_item&dataId=" + $(t).parent().parent().find("[fdata='fdata']").eq(0).attr("fdata-parent-id") + "&m=" + Math.random(),
+            success : function(data){
+                if (data){
+                    data = eval("(" + data + ")");
+                    if (data){
+                        if (data.code == "ok"){
+                            alert("删除成功");
+                            window.location.reload();
+                        } else if (data.msg){
+                            alert("删除失败 " + data.msg);
+                        } else {
+                            alert("删除失败！");
+                        }
+                    }
+                }
+            },
+            error: function(data){
+                alert("删除失败！")
+            }
+        });
+    }
+ }
+
+ window.onbeforeunload = function(){
+     localStorage.profitEditPageTabId = $("ul.tabs li.active").find("a").attr("href");
+ }
+
+ $(function(){
+     if (localStorage.profitEditPageTabId){
+         $("ul.tabs li").removeClass("active"); //Remove any "active" class
+         $("ul.tabs li a[href='" + localStorage.profitEditPageTabId + "'").parent().addClass("active");
+         $(".tab_content").hide(); //Hide all tab content
+         $(localStorage.profitEditPageTabId).fadeIn(); //Fade in the active ID content
+     }
+
+     $("a.bill-button").each(function(){
+         if ($(this).parent().find("a.bill-pic").length <= 0){
+             $(this).addClass("hide");
+         }
+     });
+
+     $("a.check-list-button").click(function(){
+         dialog({
+             title:"明细",
+             content: "<iframe src='" + $(this).attr("link") + "' width='100%' height='100%' />",
+             width:800,
+             height:600,
+             onclose: function(){
+                 window.location.reload();
+             }
+         }).showModal();
+     });
+ })
+</script>
+{% endblock %}

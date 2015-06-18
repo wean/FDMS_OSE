@@ -1,0 +1,53 @@
+{% extends "baseList.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_contact" %}
+
+{% block pagename %}
+联系人列表
+{% endblock %}
+
+{% block listhead %}
+<th width="17%" scope="col">公司</th>
+<th width="15%" scope="col">部门</th>
+<th width="15%" scope="col">联系人</th>
+<th width="10%" scope="col">联系电话</th>
+<th width="15%" scope="col">QQ</th>
+<th width="15%" scope="col">E-Mail</th>
+<th width="8%" scope="col">操作</th>
+{% endblock %}
+
+{% block listcontent %}
+{% for r in objectList %}
+<tr>
+    <td scope="col">
+        <input type="checkbox" name="checkbox2" id="checkbox2" />
+    </td>
+    <td scope="col">
+        {% for company in objectForeignList["companyId"] %}
+        {% if (r.companyId == company.id) %} {{company.name}} {% endif %}
+        {% endfor %}
+    </td>
+    <td scope="col">
+        {% for department in objectForeignList["departmentId"] %}
+        {% if (r.departmentId == department.id) %} {{department.name}} {% endif %}
+        {% endfor %}
+    </td>
+    <td scope="col">
+        {{ r.name }}
+    </td>
+    <td scope="col">
+        {{ r.phone }}
+    </td>
+    <td scope="col">
+        {{ r.qq }}
+    </td>
+    <td scope="col">
+        {{ r.email }}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}" >编辑</a>
+        <a href="javascript:delData('{{itemName}}', '{{r.id}}')">删除</a>
+    </td>
+</tr>
+{% endfor %}
+{% endblock %}

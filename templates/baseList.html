@@ -1,0 +1,70 @@
+{% extends "base.html"%}
+
+{% block content %}
+<!-- EVERYTING BELOW IS THE MAIN CONTENT -->
+<div id="main_content_wrap" class="container_12 form">
+
+    <div style="display:inline">
+        <h2 class="fl">{% block pagename %}{% endblock %}</h2>
+        {% block addbutton %}
+        <input type="button" class="submit fr" onclick="window.location.href='/page/{{ itemName }}/edit/new?{{request.query_string.decode('utf-8')}}'" value="新建" />
+        {% endblock %}
+    </div>
+    
+    <div class="clearfix">&nbsp;</div>
+    
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        
+        <tr>
+            
+            <th width="3%" scope="col">
+                <input type="checkbox" name="checkbox" id="checkbox" class="checkall" /></th>
+
+            {% block listhead %}
+            {% endblock %}
+        </tr>
+        {% block listcontent%}{% endblock %}
+    </table>
+    
+    <!-- END TABULAR DATA EXAMPLE -->
+    
+    <div class="grid_12">
+        
+        <div class="clearfix">&nbsp;</div>
+        
+        <ul id="pagination">
+
+
+            {% if paginate.has_prev %}
+            <li class="previous">
+                <a href="/page/{{itemName}}/list/{{ paginate.prev_num }}">上一页</a>
+            </li>
+            {% else %}
+            <li class="previous-off">
+                上一页
+            </li>
+            {% endif %}
+            {% for p in paginate.iter_pages() %}
+            <li {% if p == paginate.page %}class="active"{% endif%}>
+                {% if p != paginate.page %}
+                <a href="/page/{{itemName}}/list/{{p}}">
+                    {% endif %}
+                    {{ p }}
+                    {% if p != paginate.page %}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+            
+            {% if paginate.has_next %}
+            <li class="next">
+                <a href="/page/{{itemName}}/list/{{ paginate.next_num }}">下一页</a>
+            </li>
+            {% else %}
+            <li class="next-off">下一页</li>
+            {% endif %}
+        </ul>
+    </div>           
+    <div class="clearfix">&nbsp;</div>
+</div>
+{% endblock %}

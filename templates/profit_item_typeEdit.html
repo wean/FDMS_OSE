@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jitiao" %}
+{% set subPageKey = "jitiao_profit_item_type" %}
+
+{% block edithead %}
+<h2>收/付款项目</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>项目名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入项目名</span>
+</p>
+{% endblock %}

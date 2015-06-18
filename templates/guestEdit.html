@@ -1,0 +1,49 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jitiao" %}
+
+{% block edithead %}
+<h2>客人</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>姓名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入姓名</span>
+</p>
+<p>
+    <label>英文名:</label>
+    <input type="text" class="text" fdata="fdata" fdata-type="string" fdata-column="engName" value="{{objectEdit.engName}}" /> 
+    <span class="valid">请输入英文名</span>
+</p>
+<p>
+    <label>性别:</label>
+    <input type="radio" class="radio" name="sex" fdata="fdata" fdata-type="boolean" fdata-column="sex" {% if objectEdit.sex==1 %} checked="checked" {% endif %} value="1" />男 
+    <input type="radio" class="radio" name="sex" fdata="fdata" fdata-type="boolean" fdata-column="sex" {% if objectEdit.sex==0 %} checked="checked" {% endif %}  value="0" />女
+    <span class="valid">请输入性别</span>
+</p>
+<p>
+    <label>生日:</label>
+    <input type="text" class="text" fdata="fdata" fdata-type="string" fdata-column="birth" value="{{objectEdit.birth}}" /> 
+    <span class="valid">请输入生日</span>
+</p>
+<p>
+    <label>证件号码:</label>
+    <input type="text" class="text" fdata="fdata" fdata-type="string" fdata-column="idCardNo" value="{{objectEdit.idCardNo}}" /> 
+    <span class="valid">请输入证件号码</span>
+</p>
+<p>
+    <label>港签:</label>
+    <input type="checkbox" class="checkbox" fdata="fdata" fdata-type="boolean" fdata-column="visaHk" {% if objectEdit.visaHk==1 %} checked="checked" {% endif %} /> 
+    <span class="valid">请输入港签</span>
+</p>
+<p>
+    <label>澳签:</label>
+    <input type="checkbox" class="checkbox" fdata="fdata" fdata-type="boolean" fdata-column="visaMc"  {% if objectEdit.visaMc==1 %} checked="checked" {% endif %} /> 
+    <span class="valid">请输入澳签</span>
+</p>
+<p>
+    <label>签注:</label>
+    <textarea cols="5" rows="3" fdata="fdata" fdata-type="string" fdata-column="memo">{{objectEdit.memo}}</textarea>
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{request.args['profitItemId']}}" />
+</p>
+{% endblock %}

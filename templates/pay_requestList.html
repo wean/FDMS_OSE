@@ -1,0 +1,87 @@
+{% extends "baseList.html"%}
+{% set pageKey = "caiwu" %}
+{% set subPageKey = "caiwu_pay_request" %}
+
+{% block pagename %}
+请款管理
+{% endblock %}
+
+{% block addbutton %}
+<div class="search">
+    <label>关键字:</label>
+    <input type="text" class="w100" id="searchKeyword" value="{{ "" if request.args.get('_requestMemo') == None else request.args.get('_requestMemo') }}" />
+    <select id="searchStatus" class="select" style="min-width:0px">
+        <option value="-1">全部</option>
+        <option value="1" {% if request.args.get('status') =="1"%} selected="selected" {% endif %}>待审核</option>
+        <option value="2" {% if request.args.get('status') =="2"%} selected="selected" {% endif %}>审核通过</option>
+        <option value="3" {% if request.args.get('status') =="3"%} selected="selected" {% endif %}>审核失败</option>
+        <option value="4" {% if request.args.get('status') =="4"%} selected="selected" {% endif %}>已付款</option>
+    </select>
+    <input type="button" class="submit" onclick="search()" value="查询"/>
+
+    <script type="text/javascript">
+     function search(){
+         var search = "";
+         if ($("#searchKeyword").val()){
+             if (search){
+                 search += "&_requestMemo=" + $("#searchKeyword").val();
+             } else {
+                 search += "?_requestMemo=" + $("#searchKeyword").val();
+             }
+         }
+         if ($("#searchStatus").val() != "-1"){
+             if (search){
+                 search += "&status=" + $("#searchStatus").val();
+             } else {
+                 search += "?status=" + $("#searchStatus").val();
+             }
+         }
+         window.location.href = window.location.pathname + search;
+     }
+    </script>
+</div>
+{% endblock %}
+
+{% block listhead %}
+<th width="8%" scope="col">帐务类型</th>
+<th width="14%" scope="col">收款账户</th>
+<th width="7%" scope="col">金额</th>
+<th width="6%" scope="col">状态</th>
+<th width="50%" scope="col">备注</th>
+<th width="6%" scope="col">申请人</th>
+<th width="4%" scope="col">操作</th>
+{% endblock %}
+
+{% block listcontent %}
+{% for r in objectList %}
+<tr>
+    <td scope="col">
+        <input type="checkbox" value="{{r.id}}" name="checkbox2" id="checkbox2" />
+    </td>
+    <td scope="col">
+        {{"" if r.flowTypeName == None else r.flowTypeName}}
+    </td>
+    <td scope="col">
+        {{ r.extAccountCompanyName }} {{r.extAccountName}}
+    </td>
+    <td scope="col">
+        {{ r.money }}
+    </td>
+    <td scope="col">
+        {% if r.status == 1 %} <span style="color:#FF7F24">待审核</span> {% endif %}
+        {% if r.status == 2 %} <span style="color:#5D8B01">审核通过</span> {% endif %}
+        {% if r.status == 3 %} <span style="color:#EE0000">审核失败</span> {% endif %}
+        {% if r.status == 4 %} <span style="color:#D02090">已付款</span> {% endif %}
+    </td>
+    <td scope="col">
+        {{ r.requestMemo }}
+    </td>
+    <td scope="col">
+        {{ r.requestUserName }}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}" >查看</a>
+    </td>
+</tr>
+{% endfor %}
+{% endblock %}

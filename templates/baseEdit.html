@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+
+{% block content %}
+<!-- EVERYTING BELOW IS THE MAIN CONTENT -->
+<div id="main_content_wrap" class="container_12">
+    <div class="container_12">	
+        {% block edithead %}
+        {% endblock %}	
+        <form class="form" action="" method="post" fdata-key="{{dataKey}}" fdata-id="{{dataId}}">
+            {% block editbody %}{% endblock%}
+            {% block editbutton %}
+            <p>
+                <input type="button" class="submit" id="btnSave" value="保存" />
+                <input type="button" id="btnClose" class="submit special" value="取消" />
+            </p>
+            {% endblock %}
+            </form>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+</div>
+{% endblock %}

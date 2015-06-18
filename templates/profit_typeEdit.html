@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jitiao" %}
+{% set subPageKey = "jitiao_profit_type" %}
+
+{% block edithead %}
+<h2>线路类型</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>线路类型:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入线路类型</span>
+</p>
+{% endblock %}

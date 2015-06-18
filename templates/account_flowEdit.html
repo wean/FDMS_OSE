@@ -1,0 +1,35 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "caiwu" %}
+{% set subPageKey = "caiwu_account_flow" %}
+
+{% block edithead %}
+<h2>帐务</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label for="accountId">账户:</label>
+    <select id="selectAccountId" name="selectAccountId" class="select" fdata="fdata" fdata-type="string" fdata-column="accountId">
+        {% for account in objectForeignList["accountId"] %}
+        <option value="{{account.id}}" {% if account.id==objectEdit.accountId %}selected="selected" {% endif %}>{{account.name}} {{account.account}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label>金额:</label>
+    <input type="text" class="text" fdata="fdata" fdata-type="float" fdata-column="money" value="{{objectEdit.money}}" /> 
+    <span class="valid">请输入金额</span>
+</p>
+<p>
+    <label for="flowTypeId">帐务类型:</label>
+    <select id="selectFlowTypeId" name="selectFlowTypeId" class="select" fdata="fdata" fdata-type="string" fdata-column="flowTypeId">
+        {% for flowType in objectForeignList["flowTypeId"] %}
+        <option value="{{flowType.id}}" {% if flowType.id==objectEdit.flowTypeId %}selected="selected" {% endif %}>{{flowType.name}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{request.args['profitItemId']}}" />
+    <label>备注:</label>
+    <textarea cols="5" rows="3" fdata="fdata" fdata-type="string" fdata-column="memo">{{objectEdit.memo}}</textarea>
+</p>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "xitongshuju" %}
+{% set subPageKey = "xitongshuju_user" %}
+
+{% block head %}
+<style type="text/css">
+ div.privilege{
+     display: inline-block;
+     vertical-align: top;
+     margin-top: 12px;
+     width: 80%;
+ }
+ div.privilege-mainmenu{
+     display: inline-block;
+     margin-top: 4px;
+     float: left;
+     margin-right: 12px;
+ }
+ div.privilege-submenu{
+     display: inline-block;
+     margin-top: 4px;
+     float:left;
+     margin-left: 20px;
+ }
+</style>
+{% endblock %}
+
+{% block edithead %}
+<h2>用户</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>用户名:</label>
+    <input type="text" class="text small w200" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入用户名</span>
+</p>
+<p>
+    <label>密码:</label>
+    <input type="password" class="text small w200" fdata="fdata" fdata-type="string" fdata-column="password" /> 
+    <span class="valid">请输入密码</span>
+</p>
+<span>
+    <label>权限:</label>
+    <div class="privilege">
+        {% for m in pageRelateObject["mainMenu"]%}
+        <div class="privilege-mainmenu">
+            
+            <input type="checkbox" value="{{m["key"]}}" {% for p in pageRelateObject["userPrivilege"]%}{%if p.privilegeKey == m["key"] and p.status==1 %}checked="checked"{%endif%}{%endfor%}  fdata="fdata" fdata-type="string" fdata-column="checked" fdata-parent="privilege" fdata-parent-id="{{m["key"]}}" /><b>{{m["title"]}}</b>
+        </div>
+        <div class="clear" ></div>
+        {% if m["submenu"] != None %}
+        {% for mm in m["submenu"]%}
+        <div class="privilege-submenu">
+            <input type="checkbox" value="{{mm["key"]}}" {% for p in pageRelateObject["userPrivilege"]%}{%if p.privilegeKey == mm["key"] and p.status==1 %}checked="checked"{%endif%}{%endfor%} fdata="fdata" fdata-type="string" fdata-column="checked" fdata-parent="privilege" fdata-parent-id="{{mm["key"]}}"/>{{mm["title"]}}
+        </div>
+        <div class="clear" ></div>
+        {% endfor %}
+        {% endif%}
+        {% endfor %}
+    </div>
+</span>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends "baseList.html"%}
+{% set pageKey = "jitiao" %}
+{% set subPageKey = "jitiao_profit" %}
+
+{% block pagename %}
+毛利表列表
+{% endblock %}
+
+{% block listhead %}
+<th width="9%" scope="col">出发时间</th>
+<th width="38%" scope="col">线路</th>
+<th width="10%" scope="col">领队</th>
+<th width="5%" scope="col">人数</th>
+<th width="5%" scope="col">销售</th>
+<th width="5%" scope="col">计调</th>
+<th width="5%" scope="col">状态</th>
+<th width="19%" scope="col">操作</th>
+{% endblock %}
+
+{% block listcontent %}
+{% for r in objectList %}
+<tr>
+    <td scope="col">
+        <input type="checkbox" name="checkbox2" id="checkbox2" />
+    </td>
+    <td scope="col">
+        {{ r.departTime|datetime("%Y-%m-%d")}}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}">{{ r.lineName }}</a>
+    </td>
+    <td scope="col">
+        {{ r.leader }}
+    </td>
+    <td scope="col">
+        {{ r.peopleNum }}
+    </td>
+    <td scope="col">
+        {{ "" if r.sellerName == None else r.sellerName }}
+    </td>
+    <td scope="col">
+        {{ "" if r.operatorName == None else r.operatorName }}
+    </td>
+    <td scope="col">
+        {% if r.status ==0 %}未提交{%endif%}
+        {% if r.status ==1 %}已提交{%endif%}
+        {% if r.status ==2 %}已审核{%endif%}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}" >编辑</a>
+        <a href="javascript:delData('{{itemName}}', '{{r.id}}')">删除</a>
+        <a href="/page/{{itemName}}/print/{{r.id}}" >打印</a>
+        <a href="/page/guest/export_xls?profitId={{r.id}}" >客人导出</a>
+        {% if r.status ==0 %}
+        <a href="javascript:applyProfit('{{r.id}}')" >提交</a>
+        {%endif%}
+        {% if r.status ==1 %}
+        <a href="javascript:checkProfit('{{r.id}}')" class="{{"hide"|privilege("jitiao_profit_check", currentTime)}}" >审核</a>
+        {%endif%}
+    </td>
+</tr>
+{% endfor %}
+{% endblock %}
+
+{% block head %}
+<script type="text/javascript">
+ function applyProfit(profitId){
+     if (confirm("确认提交！")){
+         $.ajax({
+             type: "POST",
+             url: "/action/applyProfit?profitId=" + profitId + "&m=" + Math.random(),
+             success : function(data){
+                 if (data){
+                     data = eval("(" + data + ")");
+                     if (data){
+                         if (data.code == "ok"){
+                             alert("提交成功")
+                                 window.location.reload();
+                         } else if (data.msg){
+                             alert("提交失败 " + data.msg);
+                         } else {
+                             alert("提交失败！");
+                         }
+                     }
+                 }
+             },
+             error: function(data){
+                 alert("提交失败！")
+             }
+         });
+     }
+ }
+
+ function checkProfit(profitId){
+     if (confirm("确认审核！")){
+         $.ajax({
+             type: "POST",
+             url: "/action/checkProfit?profitId=" + profitId + "&m=" + Math.random(),
+             success : function(data){
+                 if (data){
+                     data = eval("(" + data + ")");
+                     if (data){
+                         if (data.code == "ok"){
+                             alert("确认成功")
+                                 window.location.reload();
+                         } else if (data.msg){
+                             alert("确认失败 " + data.msg);
+                         } else {
+                             alert("确认失败！");
+                         }
+                     }
+                 }
+             },
+             error: function(data){
+                 alert("确认失败！")
+             }
+         });
+     }
+ }
+</script>
+{% endblock %}
+
+{% block addbutton %}
+<div class="search">
+    <select id="searchStatus" class="select" style="min-width:0px">
+        <option value="-1">全部</option>
+        <option value="0" {% if request.args.get('status') =="0"%} selected="selected" {% endif %}>未提交</option>
+        <option value="1" {% if request.args.get('status') =="1"%} selected="selected" {% endif %}>已提交</option>
+        <option value="2" {% if request.args.get('status') =="2"%} selected="selected" {% endif %}>已审核</option>
+    </select>
+    <input type="button" class="submit" onclick="search()" value="查询"/>
+    <input type="button" class="submit" onclick="window.location.href='/page/{{ itemName }}/edit/new?{{request.query_string.decode('utf-8')}}'" value="新建" />
+
+    <script type="text/javascript">
+     function search(){
+         var search = "";
+         if ($("#searchStatus").val() != "-1"){
+             if (search){
+                 search += "&status=" + $("#searchStatus").val();
+             } else {
+                 search += "?status=" + $("#searchStatus").val();
+             }
+         }
+         window.location.href = window.location.pathname + search;
+     }
+    </script>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_account" %}
+
+{% block edithead %}
+<h2>账户</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>账户名:</label>
+    <input type="text" class="text small w100" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入账户名</span>
+</p>
+<p>
+    <label>账户:</label>
+    <input type="text" class="text" fdata="fdata" fdata-type="string" fdata-column="account" value="{{objectEdit.account}}" /> 
+    <span class="valid">请输入账户</span>
+</p>
+<p>
+    <label>账户金额:</label>
+    <input type="text" class="text small w100" fdata="fdata" fdata-type="float" fdata-column="money" value="{{objectEdit.money}}" /> 
+    <span class="valid">请输入金额</span>
+</p>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_account_flow_type" %}
+
+{% block edithead %}
+<h2>帐务类型</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>类型名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入类型名</span>
+</p>
+{% endblock %}

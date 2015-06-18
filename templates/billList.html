@@ -1,0 +1,45 @@
+{% extends "baseList.html"%}
+{% set pageKey = "caiwu" %}
+{% set subPageKey = "caiwu_bill" %}
+
+{% block pagename %}
+凭证列表
+{% endblock %}
+
+{% block listhead %}
+<th width="30%" scope="col">图片</th>
+<th width="10%" scope="col">类型</th>
+<th width="17%" scope="col">编号</th>
+<th width="20%" scope="col">备注</th>
+<th width="10%" scope="col">金额</th>
+<th width="8%" scope="col">操作</th>
+{% endblock %}
+
+{% block listcontent %}
+{% for r in objectList %}
+<tr>
+    <td scope="col">
+        <input type="checkbox" name="checkbox2" id="checkbox2" />
+    </td>
+    <td scope="col">
+        <a href="/{{r.billPic}}"  data-lightbox="img-{{r.id}}" ><img src="/{{r.billPic}}" height="100px" /></a>
+    </td>
+    <td scope="col">
+        {{ "" if r.typeName == None else r.typeName }}
+    </td>
+    <td scope="col">
+        {{ r.billNo }}
+    </td>
+    <td scope="col">
+        {{ r.memo }}
+    </td>
+    <td scope="col">
+        {{ r.money }}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}?{{request.query_string.decode('utf-8')}}" >编辑</a>
+        <a href="javascript:delData('{{itemName}}', '{{r.id}}')">删除</a>
+    </td>
+</tr>
+{% endfor %}
+{% endblock %}

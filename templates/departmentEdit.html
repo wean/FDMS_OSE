@@ -1,0 +1,22 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_department" %}
+
+{% block edithead %}
+<h2>部门</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label for="selectCompanyId">公司:</label>
+    <select id="selectCompanyId" name="selectCompanyId" class="select" fdata="fdata" fdata-type="string" fdata-column="companyId">
+        {% for company in objectForeignList["companyId"] %}
+        <option value="{{company.id}}" {% if company.id==objectEdit.companyId %}selected="selected" {% endif %}>{{company.name}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label>部门名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入部门名</span>
+</p>
+{% endblock %}

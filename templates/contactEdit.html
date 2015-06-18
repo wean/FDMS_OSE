@@ -1,0 +1,61 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_contact" %}
+
+{% block head %}
+<script type="text/javascript">
+    $(function() {
+        $("#selectCompanyId").change(function(){
+            $("#selectDepartmentId option").hide();
+            $("#selectDepartmentId option[value='']").show();
+            $("#selectDepartmentId option[companyId=" + $(this).val() + "]").show();  
+            $("#selectDepartmentId").val($("#selectDepartmentId option[companyId=" + $("#selectCompanyId").val() + "]").eq(0).val());
+        });
+        $("#selectDepartmentId option").hide();
+        $("#selectDepartmentId option[value='']").show();
+        $("#selectDepartmentId option[companyId=" + $("#selectCompanyId").val() + "]").show();
+    });
+</script>
+{% endblock %}
+{% block edithead %}
+<h2>联系人</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label for="selectCompanyId">公司:</label>
+    <select id="selectCompanyId" name="selectCompanyId" class="select" fdata="fdata" fdata-type="string" fdata-column="companyId">
+        {% for company in objectForeignList["companyId"] %}
+        <option value="{{company.id}}" {% if company.id==objectEdit.companyId %}selected="selected" {% endif %}>{{company.name}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label >部门:</label>
+    <select id="selectDepartmentId" class="select" fdata="fdata" fdata-type="string" fdata-column="departmentId">
+        <option value="" >无部门</option>
+        {% for department in objectForeignList["departmentId"] %}
+        <option value="{{department.id}}" companyId="{{department.companyId}}" {% if department.id==objectEdit.departmentId %}selected="selected" {% endif %}>{{department.name}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label>联系人:</label>
+    <input type="text" class="text small w100" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入联系人</span>
+</p>
+<p>
+    <label>电话:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="phone" value="{{objectEdit.phone}}" /> 
+    <span class="valid">请输入电话</span>
+</p>
+<p>
+    <label>QQ:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="qq" value="{{objectEdit.qq}}" /> 
+    <span class="valid">请输入QQ</span>
+</p>
+<p>
+    <label>E-Mail:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="email" value="{{objectEdit.email}}" /> 
+    <span class="valid">请输入E-Mail</span>
+</p>
+{% endblock %}

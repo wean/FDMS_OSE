@@ -1,0 +1,119 @@
+﻿{% extends "basePrint.html"%}
+{% set pageKey = "jitiao" %}
+
+{% block printbody %}
+<div style="width:800px;margin-left:auto;margin-right:auto;">
+    <table border="0" cellspacing="0" cellpadding="0" width="800px">
+        <tr style="border-width:0px !important; border-color: transparent !important;">
+            <td style="border-width:0px !important; border-color: transparent !important;font-size:15px; text-align: center; font-weight: bold" colspan="8">
+                确认单及帐单
+            </td>
+        </tr>
+        <tr style="border-width:0px !important; border-color: transparent !important;">
+            <td style="border-width:0px !important; border-color: transparent !important;" colspan="8">
+           
+                TO:{{objectPrint.companyName}}{{objectPrint.contactName}}<br/><br />
+                你好！感谢贵社对我社的关心与支持，现请贵社核对一下交与我社的参加 {{objectPrint.departTime|datetime("%Y-%m-%d")}} 的 {{objectPrint.lineName}} 名单，并申请汇款，谢谢！<br/>
+                （请注意：从2008年8月1日起，中国公民赴香港澳门旅游必须有香港澳门签注，否则无法过关，责任自付！请核对名单后立即回传，如无回传则取消操作，如贵社需要取消请在未开票情况下提前4日通知，在3日内或临时取消都须承担2000元/人的损失，节假日另算谢谢配合！春节前的团款到开票，谢谢合作！） 
+                <br />
+                <br />
+                此团人数总计：{{objectPrint.profitPeopleNum + objectPrint.leaderNum}}人
+            </td>
+        </tr>
+    	<tr>
+            <td>姓名</td>
+            <td>英文名</td>
+            <td>性别</td>
+            <td>出生年月</td>
+            <td>证件号码</td>
+            <td>港签</td>
+            <td>澳签</td>
+            <td>签注</td>
+        </tr>
+        {% for g in pageRelateObject["guestList"] %}
+        <tr>
+            <td>{{ g.name }}</td>
+            <td>{{ g.engName }}</td>
+            <td>{% if g.sex==1 %}男{%else%}女{%endif%}</td>
+            <td>{{ g.birth }}</td>
+            <td>{{ g.idCardNo }} </td>
+            <td>{% if g.visaHk==1 %}是{%else%}否{%endif%}</td>
+            <td>{% if g.visaMc==1 %}是{%else%}否{%endif%}</td>
+            <td>{{ g.memo }}</td>
+        </tr>
+        {% endfor %}
+        <tr style="border-width:0px !important; border-color: transparent !important;">
+            <td colspan="8" style="border-width:0px !important; border-color: transparent !important;">
+                <br />
+            </td>
+        </tr>
+    	<tr style="border-width:0px !important; border-color: transparent !important;">
+    	    <td style="border-width:0px !important; border-color: transparent !important;" colspan="8">客人联系方式：____________________________</td>
+    	</tr>
+        <tr style="border-width:0px !important; border-color: transparent !important;">
+            <td colspan="8" style="border-width:0px !important; border-color: transparent !important;">
+                <br />
+            </td>
+        </tr>
+        <tr>
+            <td>账单明细</td>
+            <td>单价</td>
+            <td>数量</td>
+            <td>金额</td>
+            <td colspan="4">备注</td>
+        </tr>
+        {% for c in pageRelateObject["checkItemList"] %}
+        <tr>
+            <td>{{c.typeName}}</td>
+            <td>{{c.price}}</td>
+            <td>{{c.num}}</td>
+            <td>{{c.price*c.num}}</td>
+            <td colspan="4">{{c.memo}}</td>
+        </tr>
+        {% endfor %}
+    	<tr style="border-width:0px !important; border-color: transparent !important;">
+    	    <td style="border-width:0px !important; border-color: transparent !important;">
+    	        <br />
+    	    </td>
+    	</tr>
+        <tr style="border-width:0px !important; border-color: transparent !important;">
+    	    <td colspan="8" style="border-width:0px !important; border-color: transparent !important;">共计：{{objectPrint.totalMoney}} 元，请于{{objectPrint.departTime|datetime("%Y-%m-%d")}}之前付清所有团款！谢谢！</td>
+    	</tr>
+    	<tr style="border-width:0px !important; border-color: transparent !important;">
+    	    <td colspan="8" style="border-width:0px !important; border-color: transparent !important;">
+                <br />  		        
+                公司帐号：<br />
+                苏州和平国际旅行社有限公司<br />
+                325601000010141114376<br />
+                交通银行沧浪支行<br />
+                <br />
+                私人帐号<br />
+                交通银行：胡紫婷 6222600140001814054<br />
+                建设银行：胡紫婷 4367422001310091571<br />
+                工商银行：胡紫婷 9558 8211 0200 2149119<br />
+                农业银行：胡紫婷 62284 8040 03151 62612<br />
+                中国银行：王菊峰 4563516101028764773<br />
+    	    </td>
+    	</tr>
+    	<tr style="border-width:0px !important; border-color: transparent !important;">
+    	    <td style="border-width:0px !important; border-color: transparent !important;" colspan="3">
+    	        &nbsp;&nbsp; &nbsp; (请盖章回传)
+				&nbsp;&nbsp; _________________________
+    	    </td>
+			<td style="border-width:0px !important; border-color: transparent !important;" colspan="3">
+                <label style="text-decoration: underline">{{ "" if objectPrint.profitOperatorName == None else objectPrint.profitOperatorName}}</label>
+			</td>
+			<td style="border-width:0px !important; border-color: transparent !important;" colspan="2">
+				{{ pageRelateObject["printTime"]|datetime("%Y-%m-%d") }}
+			</td>
+    	</tr>
+    	<tr style="border-width:0px !important; border-color: transparent !important;">
+    	    <td style="border-width:0px !important; border-color: transparent !important;" colspan="8">
+    	        <br />
+                苏州和平国际旅行社（出境中心）<br />
+                地址：苏州干将西路93号国涛商务大厦306&nbsp; 电话：0512-65159260 65159383 传真：0512-65159382
+            </td>
+    	</tr>
+    </table>
+</div>
+{% endblock %}

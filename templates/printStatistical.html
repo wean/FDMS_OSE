@@ -1,0 +1,81 @@
+{% extends "baseStatistical.html"%}
+{% set pageKey = "tongji" %}
+{% set subPageKey = "tongji_dayin"%}
+
+{% block body %}
+<form method="post" id="searchForm" action="/page/print/statistical">
+    <table class="condition" style="width:100%">
+        <tr>
+            <td>
+                <label>出发时间：</label>
+                <input type="text" name="departBeginTime" class="text w100 datepicker" value="{{"" if request.form.get("departBeginTime") == None else request.form.get("departBeginTime")}}" />-<input type="text" name="departEndTime" class="text w100 datepicker" value="{{"" if request.form.get("departEndTime") == None else request.form.get("departEndTime")}}" />
+                
+                <label>单位：</label>
+                <input type="text" class="text w100" name="companyName" value="{{"" if request.form.get("companyName") == None else request.form.get("companyName")}}" />
+                <label>部门：</label>
+                <input type="text" class="text w100" name="departmentName" value="{{"" if request.form.get("departmentName") == None else request.form.get("departmentName")}}" />
+                <label>类型：</label>
+                <select class="select" name="type">
+                    <option value="0" {% if request.form.get('type') =="0"%} selected="selected" {% endif %}>收入</option>
+                    <option value="1" {% if request.form.get('type') =="1"%} selected="selected" {% endif %}>支出</option>
+                </select>
+                <label>结帐状态：</label>
+                <select class="select" name="checkStatus">
+                    <option value="-1">全部</option>
+                    <option value="0" {% if request.form.get('checkStatus') =="0"%} selected="selected" {% endif %}>未结</option>
+                    <option value="1" {% if request.form.get('checkStatus') =="1"%} selected="selected" {% endif %}>已结</option>
+                </select>
+            </td>
+            <td rowspan="3" style="vertical-align: middle">
+                <input type="button" class="submit" value="查询" id="btnSearch" onclick="$('form#searchForm').attr('action', '/page/print/statistical'); $('form#searchForm').submit();" />
+                <input type="button" class="submit" value="导出" id="btnSearch" onclick="$('form#searchForm').attr('action', '/page/print/export_xls'); $('form#searchForm').submit();"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>毛利表录入时间：</label>
+                <input type="text" name="profitCreateBeginTime" class="text w100 datepicker" value="{{"" if request.form.get("profitCreateBeginTime") == None else request.form.get("profitCreateBeginTime")}}" />-<input type="text" name="profitCreateEndTime" class="text w100 datepicker" value="{{"" if request.form.get("profitCreateEndTime") == None else request.form.get("profitCreateEndTime")}}" />
+                 <label>项目录入时间：</label>
+                <input type="text" name="profitItemCreateBeginTime" class="text w100 datepicker" value="{{"" if request.form.get("profitItemCreateBeginTime") == None else request.form.get("profitItemCreateBeginTime")}}" />-<input type="text" name="profitItemCreateEndTime" class="text w100 datepicker" value="{{"" if request.form.get("profitItemCreateEndTime") == None else request.form.get("profitItemCreateEndTime")}}" />
+                <label>结余金额：</label>
+                <input type="text" class="text w100" name="remainMoney" value="{{"" if request.form.get("remainMoney") == None else request.form.get("remainMoney")}}" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>线路：</label>
+                <input type="text" class="text w100" name="lineName" value="{{"" if request.form.get("lineName") == None else request.form.get("lineName")}}" />
+                <label>团号：</label>
+                <input type="text" class="text w200" name="teamNo" value="{{"" if request.form.get("teamNo") == None else request.form.get("teamNo")}}" />
+                <label>订单号：</label>
+                <input type="text" class="text w100" name="billNo" value="{{"" if request.form.get("billNo") == None else request.form.get("billNo")}}" />
+            </td>
+    </table>
+</form>
+<table border="0px" cellpadding="0" cellspacing="0" width="100%" style="margin: 0 auto;">
+    <tr>
+        <td>时间</td>
+        <td>线路</td>
+        <td>人数</td>
+        <td>单位</td>
+        <td>部门</td>
+        <td>联系人</td>
+        <td>联系方式</td>
+        <td>总金额</td>
+        <td>结余金额</td>
+    </tr>
+    {% for r in objectStatistical["result"]%}
+    <tr>
+        <td>{{r["departTime"]}}</td>
+        <td>{{r["lineName"]}}</td>
+        <td>{{r["peopleNum"]}}</td>
+        <td>{{r["companyName"]}}</td>
+        <td>{{r["departmentName"]}}</td>
+        <td>{{r["contactName"]}}</td>
+        <td>{{"" if r["contactInfo"]==None else r["contactInfo"]}}</td>
+        <td>{{r["totalMoney"]}}</td>
+        <td>{{r["leftMoney"]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

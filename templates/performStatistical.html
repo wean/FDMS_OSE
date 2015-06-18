@@ -1,0 +1,55 @@
+{% extends "baseStatistical.html"%}
+{% set pageKey = "tongji" %}
+{% set subPageKey = "tongji_jixiao"%}
+
+{% block body %}
+<form method="post" action="/page/perform/statistical">
+    <table class="condition" style="width:100%">
+        <tr>
+            <td>
+                
+                <label>出发时间：</label>
+                <input type="text" name="departBeginTime" class="text w100 datepicker" value="{{"" if request.form.get("departBeginTime") == None else request.form.get("departBeginTime")}}" />-<input type="text" name="departEndTime" class="text w100 datepicker" value="{{"" if request.form.get("departEndTime") == None else request.form.get("departEndTime")}}" />
+                <label>入账时间：</label>
+                <input type="text" name="checkBeginTime" class="text w100 datepicker" value="{{"" if request.form.get("checkBeginTime") == None else request.form.get("checkBeginTime")}}" />-<input type="text" name="checkEndTime" class="text w100 datepicker" value="{{"" if request.form.get("checkEndTime") == None else request.form.get("checkEndTime")}}" />
+                <label>操作人：</label>
+                <select class="select" name="operatorId">
+                    <option value="">全部</option>
+                    {% for u in objectStatistical["userList"]%}
+                    <option value="{{u.id}}" {% if request.form.get("operatorId") == u.id %}selected="selected"{%endif%}>{{u.name}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td rowspan="2" style="vertical-align: middle">
+                <input type="submit" class="submit" value="查询" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <lable>类型：</lable>
+                {% for pt in objectStatistical["profitType"]%}
+                <input type="checkbox" name="profitType_{{pt.id}}" value="1" {% if request.form.get("profitType_" + pt.id) =="1" %}checked="checked"{%endif%} />{{pt.name}}
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+</form>
+<table border="0px" cellpadding="0" cellspacing="0" width="100%" style="margin: 0 auto;">
+    <tr>
+        <td>操作人</td>
+        <td>人数</td>
+        <td>总金额</td>
+        <td>回款金额</td>
+        <td>回款率%</td>
+    </tr>
+    {% for r in objectStatistical["result"]%}
+    <tr>
+        <td>{{"" if r["operatorName"] == None else r["operatorName"]}}</td>
+        <td>{{r["peopleNum"]}}</td>
+        <td>{{r["totalMoney"]}}</td>
+        <td>{{r["totalGotMoney"]}}</td>
+        <td>{{r["gotPercent"]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

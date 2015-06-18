@@ -1,0 +1,56 @@
+{% extends "baseList.html"%}
+{% set pageKey = "jitiao" %}
+
+{% block pagename %}
+客人列表
+{% endblock %}
+
+{% block listhead %}
+<th width="10%" scope="col">姓名</th>
+<th width="15%" scope="col">英文名</th>
+<th width="5%" scope="col">性别</th>
+<th width="10%" scope="col">生日</th>
+<th width="22%" scope="col">证件号</th>
+<th width="5%" scope="col">港签</th>
+<th width="5%" scope="col">澳签</th>
+<th width="15%" scope="col">签注</th>
+<th width="8%" scope="col">操作</th>
+{% endblock %}
+
+{% block listcontent %}
+{% for r in objectList %}
+<tr>
+    <td scope="col">
+        <input type="checkbox" name="checkbox2" id="checkbox2" />
+    </td>
+    <td scope="col">
+        {{ r.name }}
+    </td>
+    <td scope="col">
+        {{ r.engName }}
+    </td>
+    <td scope="col">
+        {% if r.sex == 1 %}男{% else %}女{% endif %}
+    </td>
+    <td scope="col">
+        {{ r.birth }}
+    </td>
+    <td scope="col">
+        {{ r.idCardNo }}
+    </td>
+    <td scope="col">
+        {% if r.visaHk == 1 %}是{% else %}否{% endif %}
+    </td>
+    <td scope="col">
+        {% if r.visaMc == 1 %}是{% else %}否{% endif %}
+    </td>
+    <td scope="col">
+        {{ r.memo }}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}?{{request.query_string.decode('utf-8')}}" >编辑</a>
+        <a href="javascript:delData('{{itemName}}', '{{r.id}}')">删除</a>
+    </td>
+</tr>
+{% endfor %}
+{% endblock %}

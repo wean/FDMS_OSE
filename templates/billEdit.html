@@ -1,0 +1,39 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "caiwu" %}
+{% set subPageKey = "caiwu_bill" %}
+
+{% block edithead %}
+<h2>凭证</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>类型:</label>
+    <select class="select" fdata="fdata" fdata-type="string" fdata-column="typeId">
+        {% for pt in objectForeignList["typeId"] %}
+        <option value="{{pt.id}}" {% if pt.id==objectEdit.typeId %}selected="selected" {% endif %}>{{pt.name}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label>编号:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="billNo" value="{{objectEdit.billNo}}" /> 
+    <span class="valid">请输入编号</span>
+</p>
+<p>
+    <label>金额:</label>
+    <input type="text" class="text w100" fdata="fdata" fdata-type="float" fdata-column="money" value="{{objectEdit.money}}" /> 
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{request.args['profitItemId']}}" />
+    <span class="valid">请输入金额</span>
+</p>
+<p>
+    <label>备注:</label>
+    <textarea cols="5" rows="3" fdata="fdata" fdata-type="string" fdata-column="memo">{{objectEdit.memo}}</textarea>
+</p>
+<p>
+    <label>扫描图:</label>
+    <span style="display:inline-block">
+        <input type="hidden" class="text file-browse image-uploader" maxHeight="300" id="hidBillPic" fdata="fdata" fdata-type="string" fdata-column="billPic" value="{{objectEdit.billPic}}" /> 
+    </span>
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{% if dataId =='new'%}{{request.args['profitItemId']}}{%else%}{{objectEdit.profitItemId}}{%endif%}" />
+</p>
+{% endblock %}

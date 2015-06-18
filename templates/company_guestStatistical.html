@@ -1,0 +1,39 @@
+{% extends "baseStatistical.html"%}
+{% set pageKey = "tongji" %}
+{% set subPageKey = "tongji_company_guest"%}
+
+{% block body %}
+<form method="post" id="searchForm" action="/page/company_guest/statistical">
+    <table class="condition" style="width:100%">
+        <tr>
+            <td>
+                <label>单位：</label>
+                <input type="text" class="text w100" name="companyName" value="{{"" if request.form.get("companyName") == None else request.form.get("companyName")}}" />
+                <label>时间：</label>
+                <input type="text" name="beginTime" class="text w100 datepicker" value="{{"" if request.form.get("beginTime") == None else request.form.get("beginTime")}}" />-<input type="text" name="endTime" class="text w100 datepicker" value="{{"" if request.form.get("endTime") == None else request.form.get("endTime")}}" />
+               
+            </td>
+            <td rowspan="2" style="vertical-align: middle">
+                <input type="button" class="submit" value="查询" id="btnSearch" onclick="$('form#searchForm').attr('action', '/page/company_guest/statistical'); $('form#searchForm').submit();" />
+                <input type="button" class="submit" value="导出" id="btnSearch" onclick="$('form#searchForm').attr('action', '/page/company_guest/export_xls'); $('form#searchForm').submit();"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<table border="0px" cellpadding="0" cellspacing="0" width="100%" style="margin: 0 auto;">
+    <tr>
+        <td>单位</td>
+        <td>人数</td>
+    </tr>
+    {% for r in objectStatistical["result"]%}
+    <tr>
+        <td>{{r["companyName"]}}</td>
+        <td>{{r["peopleNum"]}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td>总计</td>
+        <td>{%for r in objectStatistical["resultTotal"]%}{{r["peopleNum"]}}{%endfor%}</td>
+    </tr>
+</table>
+{% endblock %}

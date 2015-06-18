@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_line" %}
+
+{% block edithead %}
+<h2>线路</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>线路名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入线路名</span>
+</p>
+{% endblock %}

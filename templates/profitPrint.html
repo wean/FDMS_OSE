@@ -1,0 +1,109 @@
+{% extends "basePrint.html"%}
+{% set pageKey = "jitiao" %}
+
+{% block printbody %}
+<table border="0px" cellpadding="0" cellspacing="0" width="700px" style="margin: 0 auto;">
+    <tr style="border-width:0px !important; border-color: transparent !important;">
+        <td colspan="4" style="border-width:0px !important; border-color: transparent !important;">
+        	<img src="/static/images/logo_284_95.jpg" alt="" />
+        </td>
+        <td colspan="4" style="border-width:0px !important; border-color: transparent !important;">
+        	团  队(散客) 毛 利 表
+        </td>
+    </tr>
+    <tr>
+        <td class="bottomrightborder">出发日期</td>
+        <td  class="rightborder" colspan="2">
+        	{{objectPrint.departTime|datetime("%Y-%m-%d")}}
+        </td>
+        <td  class="rightborder">人数</td>
+        <td  class="noneborder">
+        	{{objectPrint.peopleNum}}
+        </td>
+        <td class="bottomrightborder">填写日期</td>
+        <td colspan="2" class="bottomborder">
+        	{{objectPrint.createTime|datetime("%Y-%m-%d")}}
+        </td>
+    </tr>
+    <tr>
+        <td class="bottomrightborder">委托方</td>
+        <td class="bottomrightborder" colspan="3">
+        	{{objectPrint.sourceTypeName}}
+        </td>
+        <td class="bottomrightborder">领队</td>
+        <td class="bottomborder" colspan="3">
+        	{{objectPrint.leader}}
+        </td>
+    </tr>
+    <tr>
+        <td class="rightborder">线路</td>
+        <td class="rightborder" colspan="3">
+        	{{objectPrint.lineName}}
+        </td>
+        <td class="rightborder">操作人</td>
+        <td class="noneborder" colspan="3">
+        	
+        </td>
+    </tr>
+    <tr>
+        <td class="bottomrightborder" colspan="4">团队各项收入</td>
+        <td class="rightborder" rowspan="2">总金额</td>
+        <td class="rightborder" rowspan="2">已结金额</td>
+        <td class="rightborder" rowspan="2">结余金额</td>
+        <td class="noneborder" rowspan="2">备注</td>
+    </tr>
+    <tr>
+        <td class="rightborder" >项目</td>
+        <td class="rightborder" >单位</td>
+        <td class="rightborder" >部门</td>
+        <td class="rightborder" >人数</td>
+    </tr>
+    {% for pi in pageRelateObject["itemIn"] %}
+    <tr>
+        <td class="bottomrightborder" >
+        	{{ pi.profitItemTypeName }}
+        </td>
+        <td class="bottomrightborder" >
+        	{{ pi.companyName }}
+        </td>
+        <td class="bottomrightborder" >
+        	{{ pi.departmentName }}
+        </td>
+        <td class="bottomrightborder" >
+        	{{ pi.peopleNum }}
+        </td>
+        <td class="bottomrightborder" >
+        	{{ pi.totalMoney }}
+        </td>
+        <td class="bottomrightborder" >
+           {{ '' if pi.checkedMoney==None else pi.checkedMoney }}        	
+        </td>
+        <td class="bottomrightborder" >
+            {{ pi.remainMoney }}
+        </td>
+        <td class="bottomborder" >
+        	{{ pi.guestContact }}
+        </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="rightborder" colspan="2">收入合计</td>
+        <td class="noneborder" colspan="6">
+        	
+        </td>
+    </tr>
+    <tr>
+        <td class="rightborder" colspan="2">支出合计</td>
+        <td class="noneborder" colspan="6">
+        	
+        </td>
+    </tr>
+    <tr>
+        <td class="rightborder" colspan="2">利润</td>
+        <td class="noneborder" colspan="6">
+        	
+        </td>
+    </tr>
+</table>
+
+{% endblock %}

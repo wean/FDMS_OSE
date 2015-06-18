@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title></title>
+
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+
+        <!-- MASTER STYLESHEET-->
+        <link href="/static/css/styles.css" rel="stylesheet" type="text/css" />
+        
+        <!-- LOAD TIPSY TOOLTIPS-->
+        <script type="text/javascript" src="/static/js/jquery.tipsy.js"></script>
+        
+        <!-- LOAD CUSTOM JQUERY SCRIPTS-->
+        <script type="text/javascript" src="/static/js/scripts.js"></script>	
+        
+	    <script src="/static/js/lightbox.min.js"></script>
+        <link href="/static/css/lightbox.css" rel="stylesheet" />
+
+        <link rel="stylesheet" href="/static/css/ui-dialog.css">
+        <script src="/static/js/dialog-min.js"></script>
+
+        <link href="/static/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/static/js/select2.min.js" ></script>
+
+        <link href="/static/css/jquery.datetimepicker.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/static/js/jquery.datetimepicker.js" ></script>
+
+        <link href="/static/css/jquery.webui-popover.min.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/static/js/jquery.webui-popover.min.js" ></script>
+
+        <script type="text/javascript" src="/static/js/jquery.ocupload.min.js" ></script>
+
+        <script language="javascript" src="/static/js/jquery.jqprint-0.3.js"></script>
+        
+        <!-- LOAD FLOT GRAPHS -->
+        <!-- <script type="text/javascript" src="/static/js/jquery.flot.pack.js"></script> -->
+        <!--[if IE]>
+                <script language="javascript" type="text/javascript" src="/static/js/excanvas.pack.js"></script>
+                <![endif]-->
+        
+        
+        <!--[if IE 6]>
+                <script src="/static/js/pngfix.js"></script>
+                <script>
+                DD_belatedPNG.fix('.png_bg');
+                </script>        
+                <![endif]-->
+
+	    
+        <!-- LOAD GRAPH JAVASCRIPT FILE-->
+        <!-- <script src="/static/js/graphs.js" type="text/javascript"></script> -->
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        <div id="header" class="png_bg">
+
+            <div id="head_wrap" class="container_12">
+                
+                <!-- start of logo - you could replace this with an image of your logo -->
+                <div id="logo" class="grid_4">
+                    <h1><span>FDMS</span></h1>
+                </div>
+                <!-- end logo -->
+                
+                <!-- start control panel -->
+    	        <div id="controlpanel" class="grid_8" style="float:right">
+                    
+                    <ul>
+    			        <li><p><strong>当前用户：{{ session['username'] }}<span id="userNotify" style="color:#FF0000"></span></strong></p></li>
+                        <!-- <li><a href="#" class="first">设置</a></li>-->
+                        <li><a href="/logout" class="last">退出登录</a></li>
+                    </ul>
+                </div>
+                <!-- end control panel -->
+                
+                <!-- start navigation -->
+      	        <div id="navigation" class=" grid_12">
+                    
+                    <ul>
+                        {% for menu in mainMenu %}
+                        <li><a href="{{ menu.link }}" {% if pageKey==menu.key %} class="active" {% endif %}>{{ menu.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    
+                </div>
+                <!-- end navigation -->
+                
+            </div><!-- end headwarp  -->
+        </div><!-- end header -->
+        <!-- staqrt subnav -->
+        <div id="sub_nav">
+
+            <div id="subnav_wrap" class="container_12">
+	            
+                <!-- start sub nav list -->
+	            <div id="subnav" class=" grid_12">
+                    
+                    <ul>
+                        {% for menu in mainMenu %}
+                         {% if pageKey==menu.key %} 
+                         {% for subMenu in menu.submenu %}
+                         <li><a href="{{ subMenu.link }}"  {% if subPageKey==subMenu.key %} class="sub_nav_active" {% endif%}>{{ subMenu.title }}</a></li>
+                         {% endfor%}
+                         {% endif %}
+                        {% endfor %}
+                    </ul>
+                    
+                </div>
+                <!-- end subnavigation list -->	
+
+            </div>
+
+
+        </div>
+        <!-- end sub_nav -->
+        {% block content %}
+        {% endblock %}
+        <div class="clearfix">&nbsp;</div>
+        <div class="container_12">
+            
+
+
+            <!-- START FOOTER -->
+            
+            <div id="footer" class="grid_12">
+                
+                <p>&copy; Copyright 2010 <a href="/" target="_blank">百顺假期</a> | Powered by <a href="#">百顺假期</a> | <a href="#">Top</a></p>
+                
+	        </div>
+            <!-- END FOOTER -->       
+        </div><!-- end content wrap -->
+    </body>
+    <script type="text/javascript" src="/static/js/fdms.js"></script>
+</html>

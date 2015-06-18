@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title></title>
+
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+
+        <!-- MASTER STYLESHEET-->
+        <link href="/static/css/styles.css" rel="stylesheet" type="text/css" />
+        
+        <!-- LOAD TIPSY TOOLTIPS-->
+        <script type="text/javascript" src="/static/js/jquery.tipsy.js"></script>
+        
+        <!-- LOAD CUSTOM JQUERY SCRIPTS-->
+        <script type="text/javascript" src="/static/js/scripts.js"></script>	
+        
+	    <script src="/static/js/lightbox.min.js"></script>
+        <link href="/static/css/lightbox.css" rel="stylesheet" />
+
+        <link rel="stylesheet" href="/static/css/ui-dialog.css">
+        <script src="/static/js/dialog-min.js"></script>
+
+        <link href="/static/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/static/js/select2.min.js" ></script>
+
+        <link href="/static/css/jquery.datetimepicker.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/static/js/jquery.datetimepicker.js" ></script>
+    </head>
+    <body>
+
+        <table width="100%" height="100%" class="edit">
+            <tr>
+                <th width="15%" scope="col">项目</th>
+                <th width="10%" scope="col">单价</th>
+                <th width="5%" scope="col">数量</th>
+                <th width="10%" scope="col">金额</th>
+                <th width="47%" scope="col">备注</th>
+                <th width="8%" scope="col">操作</th>
+            </tr>
+
+            {% for r in objectList %}
+            <tr fdata-id="{{r.id}}">
+                <td scope="col">
+                    <input type="text" class="text table_edit hide" fdata="fdata" fdata-type="int" fdata-column="typeName" value="{{r.typeName}}"/>
+                    <label class="table_read ">{{r.typeName}}</label>
+                </td>
+                <td scope="col">
+                    <input type="text" class="text table_edit hide" fdata="fdata" fdata-type="int" fdata-column="price" value="{{r.price}}"/>
+                    <label class="table_read ">{{r.price}}</label>
+                </td>
+                <td scope="col">
+                    <input type="text" class="text table_edit hide" fdata="fdata" fdata-type="int" fdata-column="num" value="{{r.num}}"/>
+                    <label class="table_read ">{{r.num}}</label>
+                </td>
+                <td scope="col">
+                    <label class="table_read">{{ r.price * r.num }}</label>
+                </td>
+                <td scope="col">
+                    <input type="text" class="text table_edit hide" fdata="fdata" fdata-type="int" fdata-column="memo" value="{{r.memo}}"/>
+                    <label class="table_read ">{{r.memo}}</label>
+                </td>
+                <td scope="col">
+                    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{r.profitItemId}}" />
+                    <a onclick="doEdit(this)" href="javascript:void(0);" >编辑</a>
+                    <a onclick="saveEdit(this)" href="javascript:void(0);" class="btn_save hide">保存</a>
+                    <a onclick="deleteRow(this)" href="javascript:void(0);" >删除</a>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr fdata-id="new">
+                <td scope="col">
+                    <input type="text" class="text table_edit " fdata="fdata" fdata-type="int" fdata-column="typeName" value=""/>
+                    <label class="table_read hide"></label>
+                </td>
+                <td scope="col">
+                    <input type="text" class="text table_edit " fdata="fdata" fdata-type="int" fdata-column="price" value=""/>
+                    <label class="table_read hide"></label>
+                </td>
+                <td scope="col">
+                    <input type="text" class="text table_edit " fdata="fdata" fdata-type="int" fdata-column="num" value=""/>
+                    <label class="table_read hide"></label>
+                </td>
+                <td scope="col">
+                    
+                </td>
+                <td scope="col">
+                    <input type="text" class="text table_edit " fdata="fdata" fdata-type="int" fdata-column="memo" value=""/>
+                    <label class="table_read hide"></label>
+                </td>
+                <td scope="col">
+                    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{request.args.get("profitItemId")}}" />
+                    <a onclick="saveEdit(this)" href="javascript:void(0);" class="btn_save">保存</a>
+                </td>
+            </tr>
+        </table>
+    </body>
+    <script type="text/javascript">
+     function saveEdit(t){
+         var json = {};
+	     $(t).parent().parent().find("[fdata='fdata']").each(function(){
+		     if ($(this).attr("fdata-column")) {
+                 if ($(this).attr("type") == "radio" && $(this).is(":checked") == false){
+                     return;
+                 }
+                 var val = $(this).val();
+                 
+                 if ($(this).attr("type") == "checkbox"){
+                     val = $(this).is(":checked") ? 1 : 0;
+                 }
+                 if (val == "" && $(this).attr("type") == "password"){
+                     return;
+                 }
+                 json[$(this).attr("fdata-column")] = val;
+		     };
+	     });
+         if (window.onSaving){
+             window.onSaving(json);
+         }
+         json["profitId"] = "{{dataId}}";
+         $.ajax({
+             type: "POST",
+             url: "/action/setData?dataKey=profit_check_item&dataId=" + $(t).parent().parent().attr("fdata-id") + "&m=" + Math.random(),
+             data: JSON.stringify(json),
+             success : function(data){
+                 if (data){
+                     data = eval("(" + data + ")")
+                         if (data){
+                             if (data.code == "ok"){
+                                 alert("保存成功!");
+                                 window.location.reload();
+                             } else if (data.msg){
+                                 alert("保存失败 " + data.msg);
+                             } else {
+                                 alert("保存失败!");
+                             }
+                         }
+                 }
+             },
+             error: function(data){
+                 alert("保存失败!");
+             }
+         });
+     }
+
+     function doEdit(t){
+         var row = $(t).parent().parent();
+
+         row.find(".btn_save").removeClass("hide");
+         row.find(".btn_save").siblings().addClass("hide");
+         row.find(".table_read").addClass("hide");
+
+         row.find(".table_read").siblings().removeClass("hide");
+
+         row.find("select.select").siblings().find(":not(.table_read)").remove();
+         row.find("select.select").show();
+     }
+
+     function deleteRow(t){
+     if (confirm("确认删除！")){
+        $.ajax({
+            type: "POST",
+            url: "/action/delData?dataKey=profit_check_item&dataId=" + $(t).parent().parent().attr("fdata-id") + "&m=" + Math.random(),
+            success : function(data){
+                if (data){
+                    data = eval("(" + data + ")");
+                    if (data){
+                        if (data.code == "ok"){
+                            alert("删除成功");
+                            window.location.reload();
+                        } else if (data.msg){
+                            alert("删除失败 " + data.msg);
+                        } else {
+                            alert("删除失败！");
+                        }
+                    }
+                }
+            },
+            error: function(data){
+                alert("删除失败！")
+            }
+        });
+    }
+ }
+    </script>
+</html>

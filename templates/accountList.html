@@ -1,0 +1,37 @@
+{% extends "baseList.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_account" %}
+
+{% block pagename %}
+账户列表
+{% endblock %}
+
+{% block listhead %}
+<th width="27%" scope="col">账户名</th>
+<th width="30%" scope="col">账户</th>
+<th width="30%" scope="col">余额</th>
+<th width="8%" scope="col">操作</th>
+{% endblock %}
+
+{% block listcontent %}
+{% for r in objectList %}
+<tr>
+    <td scope="col">
+        <input type="checkbox" name="checkbox2" id="checkbox2" />
+    </td>
+    <td scope="col">
+        {{ r.name }}
+    </td>
+    <td scope="col">
+        {{ r.account }}
+    </td>
+    <td scope="col">
+        {{ r.money }}
+    </td>
+    <td scope="col">
+        <a href="/page/{{itemName}}/edit/{{r.id}}" >编辑</a>
+        <a href="javascript:delData('{{itemName}}', '{{r.id}}')">删除</a>
+    </td>
+</tr>
+{% endfor %}
+{% endblock %}

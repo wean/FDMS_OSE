@@ -1,0 +1,129 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "caiwu" %}
+{% set subPageKey = "caiwu_income_check_new" %}
+
+{% block head %}
+<script type="text/javascript">
+ window.onSaving = function(json){
+     var userId = {{ session['userid'] }};
+     var currentTime = new Date();
+     if (json.status == 3){
+         json.cancelUserId = userId;
+         json.cancelTime = currentTime.Format("yyyy-MM-dd HH:mm:ss");
+     } else if (json.status == 2){
+         json.confirmTime = currentTime.Format("yyyy-MM-dd HH:mm:ss");
+         json.confirmUserId = userId;
+     }
+ }
+
+ $(function(){
+     $("input[type=radio][fdata=fdata][fdata-column=status]").click(function(){
+         if ($(this).is(":checked")){
+             if ($(this).attr("value") == "3"){
+                 $("textarea[fdata-column=cancelMemo]").parent().removeClass("hide");
+             } else if ($(this).attr("value") == "2") {
+                 $("textarea[fdata-column=cancelMemo]").parent().addClass("hide");
+             }
+         }
+     });
+ });
+</script>
+{% endblock %}
+
+{% block edithead %}
+<h2>入账</h2>
+{% endblock%}
+{% block editbody %}
+{% if objectEdit.status == 0 %}
+<p>
+    <label>账户:</label>
+    <select class="select" fdata="fdata" fdata-type="string" fdata-column="incomeAccountId">
+        {% for account in objectForeignList["incomeAccountId"] %}
+        <option value="{{account.id}}" {% if account.id==objectEdit.incomeAccountId %}selected="selected" {% endif %}>{{account.name}} {{account.account}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label for="flowTypeId">帐务类型:</label>
+    <select id="selectFlowTypeId" name="selectFlowTypeId" class="select" fdata="fdata" fdata-type="string" fdata-column="flowTypeId">
+        {% for flowType in objectForeignList["flowTypeId"] %}
+        <option value="{{flowType.id}}" {% if flowType.id==objectEdit.flowTypeId %}selected="selected" {% endif %}>{{flowType.name}}</option>
+        {% endfor %}
+    </select>
+</p>
+<p>
+    <label>金额:</label>
+    <input type="text" class="text w100" fdata="fdata" fdata-type="float" fdata-column="money" value="{{pageRelateObject["profitItem"].remainMoney}}" /> 
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="requestUserId" value="{{ session['userid'] }}" />
+    <input type="hidden" fdata="fdata" fdata-type="int" fdata-column="status" value="1" />
+    {% if request.args.get("profitItemId") != None %}
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{ request.args.get('profitItemId')}}" />
+    {% endif %}
+    <span class="valid">请输入金额</span>
+</p>
+<p>
+    <label>备注:</label>
+    <textarea cols="5" rows="3" fdata="fdata" fdata-type="string" fdata-column="requestMemo">{% if pageRelateObject["profit"] != None %}出发时间：{{(pageRelateObject["profit"].departTime)|datetime("%Y-%m-%d")}} 线路：{{pageRelateObject["profit"].lineName}} 团号：{{pageRelateObject["profit"].teamNo}}{% endif %} {% if pageRelateObject["profitItem"] != None %}公司：{{pageRelateObject["profitItem"].companyName}} 部门：{{pageRelateObject["profitItem"].departmentName}} 联系人：{{pageRelateObject["profitItem"].contactName}} 项目：{{pageRelateObject["profitItem"].profitItemTypeName}}{% endif %}</textarea>
+</p>
+<p>
+    <label>扫描图:</label>
+    <span style="display:inline-block">
+        <input type="hidden" class="text file-browse image-uploader" maxHeight="300" id="hidPayPic" fdata="fdata" fdata-type="string" fdata-column="payPic" value="{{"" if objectEdit.payPic == None else objectEdit.payPic}}" /> 
+    </span>
+</p>
+{% else %}
+<p>
+    <label>账户:</label>
+    <span>
+        {% for account in objectForeignList["incomeAccountId"] %}
+        {% if account.id==objectEdit.incomeAccountId %}{{account.name}} {{account.account}}{%endif%}
+        {% endfor %}
+    </span>
+</p>
+<p>
+    <label>帐务类型:</label>
+    <span>
+        {% for flowType in objectForeignList["flowTypeId"] %}
+        {% if flowType.id==objectEdit.flowTypeId %}{{flowType.name}}{% endif %}
+        {% endfor %}
+    </span>
+</p>
+<p>
+    <label>入账金额:</label>
+    <span>{{objectEdit.money}}</span>
+</p>
+<p>
+    <label>申请备注:</label>
+    <span>{{objectEdit.requestMemo}}</span>
+</p>
+<p>
+    <label>扫描图:</label>
+    <span><img style="max-width:300px" src="/{{objectEdit.payPic}}" /></span>
+</p>
+{% endif %}
+{% if objectEdit.status == 1 %}
+<p>
+    <label>审核结果:</label>
+    <input type="radio" name="status" fdata="fdata" fdata="int" fdata-column="status" value="2" checked="checked" /><span>通过</span>
+    <input type="radio" name="status" fdata="fdata" fdata="int" fdata-column="status" value="3" /><span>不通过</span>
+</p>
+<p class="hide" >
+    <label>备注:</label>
+    <textarea cols="5" rows="3" fdata="fdata" fdata-type="string" fdata-column="cancelMemo"></textarea>
+</p>
+{% endif %}
+{% if objectEdit.status == 3%}
+<p>
+    <label>驳回理由:</label>
+    <span>{{objectEdit.cancelMemo}}</span>
+</p>
+{% endif %}
+{% if objectEdit.status > 0 %}
+<p>
+    <label>状态:</label>
+    {% if objectEdit.status == 1 %} <span style="color:#FF7F24">待审核</span> {% endif %}
+    {% if objectEdit.status == 2 %} <span style="color:#5D8B01">审核通过</span> {% endif %}
+    {% if objectEdit.status == 3 %} <span style="color:#EE0000">审核失败</span> {% endif %}
+</p>
+{% endif %}
+{% endblock %}

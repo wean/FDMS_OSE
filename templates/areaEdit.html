@@ -1,0 +1,14 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jichushuju" %}
+{% set subPageKey = "jichushuju_area" %}
+
+{% block edithead %}
+<h2>区域</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>区域名:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="name" value="{{objectEdit.name}}" /> 
+    <span class="valid">请输入区域名</span>
+</p>
+{% endblock %}

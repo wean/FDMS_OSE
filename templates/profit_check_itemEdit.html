@@ -1,0 +1,28 @@
+{% extends "baseEdit.html"%}
+{% set pageKey = "jitiao" %}
+
+{% block edithead %}
+<h2>账单明细</h2>
+{% endblock%}
+{% block editbody %}
+<p>
+    <label>项目:</label>
+    <input type="text" class="text small" fdata="fdata" fdata-type="string" fdata-column="typeName" value="{{objectEdit.typeName}}" /> 
+    <span class="valid">请输入项目</span>
+</p>
+<p>
+    <label>单价:</label>
+    <input type="text" class="text w100" fdata="fdata" fdata-type="float" fdata-column="price" value="{{objectEdit.price}}" /> 
+    <span class="valid">请输入单价</span>
+</p>
+<p>
+    <label>数量:</label>
+    <input type="text" class="text w100" fdata="fdata" fdata-type="int" fdata-column="num" value="{{objectEdit.num}}" /> 
+    <span class="valid">请输入数量</span>
+</p>
+<p>
+    <label>备注:</label>
+    <textarea cols="5" rows="3" fdata="fdata" fdata-type="string" fdata-column="memo">{{objectEdit.memo}}</textarea>
+    <input type="hidden" fdata="fdata" fdata-type="string" fdata-column="profitItemId" value="{{request.args['profitItemId']}}" />
+</p>
+{% endblock %}
